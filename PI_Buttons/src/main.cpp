@@ -13,7 +13,7 @@ void deactivateSolenoid(int Pin) {
 
 void setup() {
   // put your setup code here, to run once:
-  for (int i = 0; i<10; i++)
+  for (int i = 0; i < 10; i++)
   {
     pinMode(i, OUTPUT);
   }
@@ -24,17 +24,17 @@ const unsigned long DURATION = 300; // duration of a press
 
 bool act = true; // if act is true some solenoid needs to toggle
 bool extended = false; // if extended is true one solenoid is extended
-int pi_index = 0; 
+int piIndex = 0; 
 unsigned long beginDelay;
 
 void loop() {
 
   if(act) {
     if (extended) {
-      deactivateSolenoid(pi[pi_index]);
+      deactivateSolenoid( PI[piIndex] );
       extended = false;
     } else {
-      activateSolenoid(pi[pi_index]);
+      activateSolenoid( PI[piIndex] );
       extended = true;
     }
 
@@ -45,7 +45,7 @@ void loop() {
       act = true;
       if (!extended) {
         // only iterate pi index when we have extended and unextended
-        pi_index++;
+        piIndex++;
       }
     }
   }
