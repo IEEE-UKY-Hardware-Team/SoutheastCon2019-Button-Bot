@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "../include/pi2000.h"
 
 void activateSolenoid(int Pin) {
   // send a HIGH Signal to Pin
@@ -20,7 +21,6 @@ void setup() {
 
 const unsigned long SPACING = 500;  // ms between presses
 const unsigned long DURATION = 300; // duration of a press
-const char pi[10] = {3, 1, 4, 1, 5, 9, 2, 6, 5, 4};
 
 bool act = true; // if act is true some solenoid needs to toggle
 bool extended = false; // if extended is true one solenoid is extended
