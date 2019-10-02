@@ -31,10 +31,10 @@ void loop() {
 
   if(act) {
     if (extended) {
-      deactivateSolenoid( PI[piIndex] );
+      deactivateSolenoid( bigPI[piIndex] );
       extended = false;
     } else {
-      activateSolenoid( PI[piIndex] );
+      activateSolenoid( bigPI[piIndex] );
       extended = true;
     }
 
