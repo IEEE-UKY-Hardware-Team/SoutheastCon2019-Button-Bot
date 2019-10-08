@@ -11,16 +11,19 @@ void deactivateSolenoid(int Pin) {
   digitalWrite(Pin, LOW);
 }
 
+int pinOffset = 2;
+
 void setup() {
   // put your setup code here, to run once:
-  for (int i = 0; i < 10; i++)
+  Serial.begin(9600);
+  for (int i = pinOffset; i < 10; i++)
   {
     pinMode(i, OUTPUT);
   }
 }
 
-const unsigned long SPACING = 500;  // ms between presses
-const unsigned long DURATION = 300; // duration of a press
+const unsigned long SPACING = 300;  // ms between presses
+const unsigned long DURATION = 100; // duration of a press
 
 bool act = true; // if act is true some solenoid needs to toggle
 bool extended = false; // if extended is true one solenoid is extended
@@ -30,18 +33,23 @@ unsigned long beginDelay;
 void loop() {
 
   if(act) {
+    int pinNumber = bigPI[piIndex] - '0';
     if (extended) {
-      deactivateSolenoid( bigPI[piIndex] );
+      deactivateSolenoid( pinNumber + pinOffset );
       extended = false;
+      Serial.print("deactivate ");
+      Serial.println(pinNumber + pinOffset);
     } else {
-      activateSolenoid( bigPI[piIndex] );
+      activateSolenoid( pinNumber + pinOffset );
       extended = true;
+      Serial.print("activate ");
+      Serial.println(pinNumber + pinOffset);
     }
 
     beginDelay = millis();
     act = false;
   } else {
-    if (millis() - beginDelay < (extended ? DURATION : SPACING)) {
+    if (millis() - beginDelay > (extended ? DURATION : SPACING)) {
       act = true;
       if (!extended) {
         // only iterate pi index when we have extended and unextended
