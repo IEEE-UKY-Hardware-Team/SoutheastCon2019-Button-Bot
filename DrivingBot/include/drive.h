@@ -48,12 +48,33 @@ void both(const int left[2], const int right[2], int value)
     drive(right, value);
 }
 
-int PID(int error, float P, float I, float D)
+class PID
 {
     // K = P*error(t) + (I*integral_0-->t) (error(T)) dT  D*(d/dt(error(t)))
     // maximum error is P * 255
+    public:
+        void SetConstants(const float PROPORTIONAL_CONSTANT, const float INTEGRAL_CONSTANT, const float DERIVATIVE_CONSTANT);
+        void SetFrequency(float sensorHertz);
+        int evaluate(int error); // the inputed error should be a number of sensor measurements
 
-    return P * error;
+    private:
+        int previousError;
+        float frequency;
+        int accumulation = 0;
+        float P, I, D = 1;
+};
+
+void PID::SetConstants(const float PROPORTIONAL_CONSTANT, const float INTEGRAL_CONSTANT, const float DERIVATIVE_CONSTANT) {
+    P = PROPORTIONAL_CONSTANT, I = INTEGRAL_CONSTANT, D = DERIVATIVE_CONSTANT;
+}
+
+void PID::SetFrequency(float sensorHertz) {
+    frequency = sensorHertz;
+}
+
+int PID::evaluate(int error) {
+    accumulation += frequency*error; // lefthanded approximation of an integral
+    return (P*error + I*accumulation + D*(previousError-error)*frequency);
 }
 
 #endif
