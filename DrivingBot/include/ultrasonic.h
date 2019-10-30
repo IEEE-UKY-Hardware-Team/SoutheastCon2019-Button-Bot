@@ -34,4 +34,23 @@ void ultrasonicLoop(int trigPin, int echoPin) {
   //Serial.println(distanceIN);
 }
 
+int ultrasonicDistance(int trigPin, int echoPin) {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  duration = pulseIn(echoPin, HIGH);
+
+  distanceCM = duration * (0.034 / 2);
+  //distanceIN = distanceCM / 2.54;
+
+  return distanceCM;
+}
+
 #endif
