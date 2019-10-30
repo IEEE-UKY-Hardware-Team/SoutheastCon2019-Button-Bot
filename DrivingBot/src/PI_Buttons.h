@@ -14,7 +14,7 @@ void deactivateSolenoid(int Pin) {
 
 int pinOffset = 2;
 
-void setup() {
+void PISolenoidSetup() {
   // put your setup code here, to run once:
   // Serial.begin(9600);
   for (int i = pinOffset; i < (10+pinOffset); i++)
@@ -31,7 +31,7 @@ bool extended = false; // if extended is true one solenoid is extended
 int piIndex = 0; 
 unsigned long beginDelay;
 
-void loop() {
+void PISolenoidLoop() {
 
   if(act) {
     int pinNumber = bigPI[piIndex] - '0';

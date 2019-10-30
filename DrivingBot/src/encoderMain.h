@@ -6,7 +6,7 @@
 #define ENCODER_2_A 56
 #define ENCODER_2_B 57
 
-void setup() {
+void encoderSetup() {
   // put your setup code here, to run once:
   pinMode(ENCODER_1_A, INPUT);
   pinMode(ENCODER_1_B, INPUT);
@@ -14,12 +14,12 @@ void setup() {
   pinMode(ENCODER_2_B, INPUT);
 }
 
-const int[4] encoderPins = {ENCODER_1_A, ENCODER_1_B, ENCODER_2_A, ENCODER_2_B};
-unsigned int[4] encoderCounts = {0,0,0,0};
-int[4] encoderState = {LOW, LOW, LOW, LOW};
+const int encoderPins[4] = {ENCODER_1_A, ENCODER_1_B, ENCODER_2_A, ENCODER_2_B};
+unsigned int encoderCounts[4] = {0,0,0,0};
+int encoderState[4]  = {LOW, LOW, LOW, LOW};
 
 
-void loop() {
+void encoderMain() {
   // put your main code here, to run repeatedly:
   int reading = LOW;
   for (int i = 0; i < 4; i++) {
