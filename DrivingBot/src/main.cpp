@@ -41,7 +41,7 @@ void loop() {
     } else {
       count--;
     }
-    Serial.println(count);
+    // Serial.println(count);
   }
   // Serial.println(digitalRead(digital_pin_A));
   // Serial.println(count);
@@ -52,9 +52,9 @@ void loop() {
 
   if (currClock - lastSampleClock > 1000) {
     int error = 360 - count;
-    drive(drivePins, pid1.evaluate(error));
+    // drive(drivePins, pid1.evaluate(error));
     // Serial.print("error");
-    // Serial.println(error);
+    Serial.println(error);
     lastSampleClock = currClock;
   }
 }
