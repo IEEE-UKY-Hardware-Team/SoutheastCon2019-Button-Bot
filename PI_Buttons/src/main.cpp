@@ -2,18 +2,18 @@
 #include "../include/pi10000.h"
 // #include "Arduino_LCD.h"
 
-#define digit_00        31
-#define digit_01        33
-#define digit_02        35
-#define digit_03        37
-#define digit_04        39
-#define digit_05        41
-#define digit_06        43
-#define digit_07        45
-#define digit_08        47
-#define digit_09        49
-#define Error_pin       51
-#define button_pin      53
+#define digit_00        2
+#define digit_01        3
+#define digit_02        4
+#define digit_03        5
+#define digit_04        6
+#define digit_05        7
+#define digit_06        8
+#define digit_07        9
+#define digit_08        10
+#define digit_09        11
+#define Error_pin       12
+#define button_pin      13
 
 void activateSolenoid(int Pin) {
   // send a HIGH Signal to Pin
@@ -43,8 +43,8 @@ void setup() {
 
 }
 
-const unsigned long SPACING = 60;  // ms between presses
-const unsigned long DURATION = 60; // duration of a press
+const unsigned long SPACING = 75;  // ms between presses
+const unsigned long DURATION = 75; // duration of a press
 
 bool act = true; // if act is true some solenoid needs to toggle
 bool extended = false; // if extended is true one solenoid is extended
