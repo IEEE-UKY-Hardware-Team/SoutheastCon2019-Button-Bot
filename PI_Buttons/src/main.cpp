@@ -1,21 +1,22 @@
 #include <Arduino.h>
 #include "../include/pi10000.h"
+#include "drive.h"
 // #include "Arduino_LCD.h"
 
-#define digit_00          0
-#define digit_01          1
-#define digit_02          2
-#define digit_03          3
-#define digit_04          4
-#define digit_05          5
-#define digit_06          6
-#define digit_07          7
-#define digit_08          8
-#define digit_09          9
+#define digit_00          2
+#define digit_01          3
+#define digit_02          4
+#define digit_03          5
+#define digit_04          6
+#define digit_05          7
+#define digit_06          8
+#define digit_07          9
+#define digit_08          12
+#define digit_09          13
 #define drive_pin_a       10
 #define drive_pin_b       11
-#define trigger_pin       12
-#define release_arms_pin  13
+#define trigger_pin       A0
+#define release_arms_pin  A1
 #define drive_forward     255
 
 void activateSolenoid(int Pin) {
@@ -41,13 +42,10 @@ void setup() {
   pinMode(digit_07, OUTPUT);
   pinMode(digit_08, OUTPUT);
   pinMode(digit_09, OUTPUT);
-  pinMode(Error_pin, OUTPUT);
-  pinMode(start_pin, INPUT);
-  pinMode(left_trigger_pin, INPUT);
-  pinMode(right_trigger_pin, INPUT);
+  pinMode(trigger_pin, INPUT_PULLUP);
+  pinMode(release_arms_pin, OUTPUT);
   pinMode(drive_pin_a, OUTPUT);
   pinMode(drive_pin_b, OUTPUT);
-  pinMode(release_arms_pin, OUTPUT);
 }
 
 const unsigned long SPACING = 75;  // ms between presses
@@ -65,7 +63,7 @@ int drivePins[2] = {drive_pin_a, drive_pin_b};
 void loop() {
 
   while (!startPressed) {
-    if(digitalRead(trigger_pin)) {
+    if(analogRead(trigger_pin) > 122) {
       startPressed = true;
       delay(1000);
     }
@@ -74,7 +72,7 @@ void loop() {
   // drive forward until both switches hit.
   while (!atWall) {
     drive(drivePins, drive_forward);
-    if (digitalRead(trigger_pin)) {
+    if (analogRead(trigger_pin) > 122) {
       atWall = true;
       delay(200);
       brake(drive_pin_a, drive_pin_b);
@@ -87,7 +85,7 @@ void loop() {
     
 
     //Serial.println(piIndex);
-    Serial.println(pinNumber - '0');
+    //Serial.println(pinNumber - '0');
     switch(pinNumber)
     {
       case '0':
@@ -121,19 +119,19 @@ void loop() {
         pinNumber = digit_09;
         break;
       default:
-        pinNumber = Error_pin;
+        pinNumber = digit_00;
     }
     //If statements to toggle between extend/retract
     if (extended) {
       deactivateSolenoid( pinNumber );
       extended = false;
-      Serial.print("deactivate ");
-      Serial.println(pinNumber );
+      //Serial.print("deactivate ");
+      //Serial.println(pinNumber );
     } else {
       activateSolenoid( pinNumber );
       extended = true;
-      Serial.print("activate ");
-      Serial.println( pinNumber );
+      //Serial.print("activate ");
+      //Serial.println( pinNumber );
     }
 
     beginDelay = millis();
