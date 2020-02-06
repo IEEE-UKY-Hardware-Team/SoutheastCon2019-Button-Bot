@@ -2,12 +2,13 @@
 #include "../include/pi10000.h"
 #include "drive.h"
 // #include "Arduino_LCD.h"
+#include <Servo.h>
 
 #define digit_00          2
 #define digit_01          3
 #define digit_02          4
-#define digit_03          5
-#define digit_04          6
+#define servo_1           5 //#define digit_03          5
+#define servo_2           6 //#define digit_04          6
 #define digit_05          7
 #define digit_06          8
 #define digit_07          9
@@ -18,6 +19,15 @@
 #define trigger_pin       A0
 #define release_arms_pin  A1
 #define drive_forward     255
+#define digit_03          A2
+#define digit_04          A3
+
+#define hook_start_angle 0
+#define hook_down_angle 179
+
+//Defining servo objects?
+Servo hook_servo_1;
+Servo hook_servo_2;
 
 void activateSolenoid(int Pin) {
   // send a HIGH Signal to Pin
@@ -46,7 +56,33 @@ void setup() {
   pinMode(release_arms_pin, OUTPUT);
   pinMode(drive_pin_a, OUTPUT);
   pinMode(drive_pin_b, OUTPUT);
+  
+  //pinMode(servo_1, OUTPUT);
+  //pinMode(servo_2, OUTPUT);
+
+  hook_servo_1.attach(servo_1);
+  hook_servo_2.attach(servo_2);
+  
+  // write hook servos to start position
+  hook_servo_1.write(hook_start_angle);
+  hook_servo_2.write(hook_start_angle);
 }
+// Figure out which pins could be used as pwm for arduino pro mini
+// Designate those as for the servos in #define.
+//**********************************************
+// Pins 5 & 6 used for Servos 1 and 2 respetively
+//**********************************************
+
+// Replace whatever solenoids was using them so that they can use analog.
+//**********************************************
+// Solenoids moved to A2 and A3
+//**********************************************
+
+// Write code so that as the robot drives forward, the servos will rotate 90 degrees.
+//**********************************************
+// pending...
+//**********************************************
+
 
 const unsigned long SPACING = 75;  // ms between presses
 const unsigned long DURATION = 75; // duration of a press
@@ -66,10 +102,14 @@ void loop() {
     if(analogRead(trigger_pin) > 122) {
       startPressed = true;
       delay(1000);
+      //drop hook servos
+      hook_servo_1.write(hook_down_angle);
+      hook_servo_2.write(hook_down_angle);
     }
   }
-
+  // IDEA: put start button in parrallel with two trigger buttons.
   // drive forward until both switches hit.
+  
   while (!atWall) {
     drive(drivePins, drive_forward);
     if (analogRead(trigger_pin) > 122) {
@@ -150,5 +190,5 @@ void loop() {
       }
   }
 
-  // put your main code here, to run repeatedly:
 }
+
