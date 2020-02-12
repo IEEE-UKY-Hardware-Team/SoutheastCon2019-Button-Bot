@@ -2,7 +2,7 @@
 #include "../include/pi10000.h"
 #include "drive.h"
 // #include "Arduino_LCD.h"
-#include <Servo.h>
+#include "Servo.h"
 
 #define digit_00          2
 #define digit_01          3
@@ -97,9 +97,11 @@ bool atWall = false;
 int drivePins[2] = {drive_pin_a, drive_pin_b};
 
 void loop() {
-
+  Serial.println("A");
   while (!startPressed) {
+    Serial.println("B");
     if(analogRead(trigger_pin) > 122) {
+      Serial.println("C");
       startPressed = true;
       delay(1000);
       //drop hook servos
@@ -109,18 +111,21 @@ void loop() {
   }
   // IDEA: put start button in parrallel with two trigger buttons.
   // drive forward until both switches hit.
-  
+  Serial.println("D");
   while (!atWall) {
+    Serial.println("E");
     drive(drivePins, drive_forward);
     if (analogRead(trigger_pin) > 122) {
+      Serial.println("F");
       atWall = true;
       delay(200);
       brake(drive_pin_a, drive_pin_b);
       deactivateSolenoid(release_arms_pin);
     }
   }
-
+  Serial.println("G");
   if(act) {
+    Serial.println("H");
     pinNumber = pgm_read_byte_near(bigPI + piIndex);
     
 
@@ -179,6 +184,7 @@ void loop() {
   } 
   else 
   {
+    Serial.println("I");
     if (millis() - beginDelay > (extended ? DURATION : SPACING))
       {
         act = true;
