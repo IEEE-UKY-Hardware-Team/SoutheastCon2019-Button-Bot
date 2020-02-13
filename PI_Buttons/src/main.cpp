@@ -17,13 +17,13 @@
 #define drive_pin_a       10
 #define drive_pin_b       11
 #define trigger_pin       A0
-#define release_arms_pin  A1
+#define release_arms_pin  A1 //
 #define drive_forward     255
 #define digit_03          A2
 #define digit_04          A3
 
-#define hook_start_angle 0
-#define hook_down_angle 179
+#define hook_start_angle 179
+#define hook_down_angle 0
 
 //Defining servo objects?
 Servo hook_servo_1;
@@ -41,7 +41,7 @@ void deactivateSolenoid(int Pin) {
 
 void setup() {
   // put your setup code here, to run once:
-  //Serial.begin(9600);
+  Serial.begin(9600);
   pinMode(digit_00, OUTPUT);
   pinMode(digit_01, OUTPUT);
   pinMode(digit_02, OUTPUT);
@@ -97,10 +97,10 @@ bool atWall = false;
 int drivePins[2] = {drive_pin_a, drive_pin_b};
 
 void loop() {
-  Serial.println("A");
+  //Serial.println("A");
   while (!startPressed) {
-    Serial.println("B");
-    if(analogRead(trigger_pin) > 122) {
+    Serial.println(analogRead(trigger_pin));
+    if(analogRead(trigger_pin) < 100) {
       Serial.println("C");
       startPressed = true;
       delay(1000);
@@ -111,11 +111,11 @@ void loop() {
   }
   // IDEA: put start button in parrallel with two trigger buttons.
   // drive forward until both switches hit.
-  Serial.println("D");
+  //Serial.println("D");
   while (!atWall) {
     Serial.println("E");
     drive(drivePins, drive_forward);
-    if (analogRead(trigger_pin) > 122) {
+    if (analogRead(trigger_pin) < 100) {
       Serial.println("F");
       atWall = true;
       delay(200);
@@ -123,7 +123,7 @@ void loop() {
       deactivateSolenoid(release_arms_pin);
     }
   }
-  Serial.println("G");
+  //Serial.println("G");
   if(act) {
     Serial.println("H");
     pinNumber = pgm_read_byte_near(bigPI + piIndex);
