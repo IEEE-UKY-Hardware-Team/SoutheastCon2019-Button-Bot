@@ -7,22 +7,22 @@
 #define digit_00          2
 #define digit_01          3
 #define digit_02          4
-#define servo_1           5 //#define digit_03          5
-#define servo_2           6 //#define digit_04          6
+#define servo_1           10 //#define digit_03          5
+#define servo_2           11 //#define digit_04          6
 #define digit_05          7
 #define digit_06          8
 #define digit_07          9
-#define digit_08          12
-#define digit_09          13
-#define drive_pin_a       10
-#define drive_pin_b       11
+#define digit_08          13
+#define digit_09          12
+#define drive_pin_a       5
+#define drive_pin_b       6
 #define trigger_pin       A0
 #define release_arms_pin  A1 //
-#define drive_forward     255
+#define drive_forward     165
 #define digit_03          A2
 #define digit_04          A3
 
-#define hook_start_angle 179
+#define hook_start_angle 90
 #define hook_down_angle 0
 
 //Defining servo objects?
@@ -84,7 +84,7 @@ void setup() {
 //**********************************************
 
 
-const unsigned long SPACING = 75;  // ms between presses
+const unsigned long SPACING = 250;  // ms between presses
 const unsigned long DURATION = 75; // duration of a press
 
 bool act = true; // if act is true some solenoid needs to toggle
@@ -119,7 +119,10 @@ void loop() {
       Serial.println("F");
       atWall = true;
       delay(200);
-      brake(drive_pin_a, drive_pin_b);
+      activateSolenoid(release_arms_pin);
+      delay(400);
+      brake(drivePins[0], drivePins[1]);
+      delay(2000);
       deactivateSolenoid(release_arms_pin);
     }
   }
