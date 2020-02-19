@@ -7,15 +7,15 @@
 #define digit_00          2
 #define digit_01          3
 #define digit_02          4
-#define servo_1           5 //#define digit_03          5
-#define servo_2           6 //#define digit_04          6
+#define servo_1           10 //#define digit_03          5
+#define servo_2           11 //#define digit_04          6
 #define digit_05          7
 #define digit_06          8
 #define digit_07          9
-#define digit_08          12
-#define digit_09          13
-#define drive_pin_a       10
-#define drive_pin_b       11
+#define digit_08          13
+#define digit_09          12
+#define drive_pin_a       5
+#define drive_pin_b       6
 #define trigger_pin       A0
 #define release_arms_pin  A1
 #define drive_forward     255
@@ -97,104 +97,57 @@ bool atWall = false;
 int drivePins[2] = {drive_pin_a, drive_pin_b};
 
 void loop() {
-  Serial.println("A");
-  while (!startPressed) {
-    Serial.println("B");
-    if(analogRead(trigger_pin) > 122) {
-      Serial.println("C");
-      startPressed = true;
-      delay(1000);
-      //drop hook servos
-      hook_servo_1.write(hook_down_angle);
-      hook_servo_2.write(hook_down_angle);
-    }
-  }
   // IDEA: put start button in parrallel with two trigger buttons.
-  // drive forward until both switches hit.
-  Serial.println("D");
-  while (!atWall) {
-    Serial.println("E");
-    drive(drivePins, drive_forward);
-    if (analogRead(trigger_pin) > 122) {
-      Serial.println("F");
-      atWall = true;
-      delay(200);
-      brake(drive_pin_a, drive_pin_b);
-      deactivateSolenoid(release_arms_pin);
-    }
+  // drive forward until both switches hit. 
+  for (int i = 0; i < 3; i++) {
+    activateSolenoid(release_arms_pin);
+    delay(200);
+    deactivateSolenoid(release_arms_pin);
+    delay(200);
   }
-  Serial.println("G");
-  if(act) {
-    Serial.println("H");
-    pinNumber = pgm_read_byte_near(bigPI + piIndex);
-    
-
-    //Serial.println(piIndex);
-    //Serial.println(pinNumber - '0');
-    switch(pinNumber)
+  for (int i = 0; i <= 9; i++) {
+    int pinNumber;
+    switch(i)
     {
-      case '0':
+      case 0:
         pinNumber = digit_00;
         break;
-      case '1':
+      case 1:
         pinNumber = digit_01;
         break;
-      case '2':
+      case 2:
         pinNumber = digit_02;
         break;
-      case '3':
+      case 3:
         pinNumber = digit_03;
         break;
-      case '4':
+      case 4:
         pinNumber = digit_04;
         break;
-      case '5':
+      case 5:
         pinNumber = digit_05;
         break;
-      case '6':
+      case 6:
         pinNumber = digit_06;
         break;
-      case '7':
+      case 7:
         pinNumber = digit_07;
         break;
-      case '8':
+      case 8:
         pinNumber = digit_08;
         break;
-      case '9':
+      case 9:
         pinNumber = digit_09;
         break;
       default:
         pinNumber = digit_00;
     }
-    //If statements to toggle between extend/retract
-    if (extended) {
-      deactivateSolenoid( pinNumber );
-      extended = false;
-      //Serial.print("deactivate ");
-      //Serial.println(pinNumber );
-    } else {
-      activateSolenoid( pinNumber );
-      extended = true;
-      //Serial.print("activate ");
-      //Serial.println( pinNumber );
+    for (int j = 0; j < 3; j++) {
+      activateSolenoid(pinNumber);
+      delay(200);
+      deactivateSolenoid(pinNumber);
+      delay(200);
     }
-
-    beginDelay = millis();
-    act = false;
-  } 
-  else 
-  {
-    Serial.println("I");
-    if (millis() - beginDelay > (extended ? DURATION : SPACING))
-      {
-        act = true;
-        if (!extended) 
-        {
-          // only iterate pi index when we have extended and unextended
-          piIndex++;
-        }
-      }
   }
-
 }
 
