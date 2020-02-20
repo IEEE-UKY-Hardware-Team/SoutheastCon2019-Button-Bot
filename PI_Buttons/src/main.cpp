@@ -4,30 +4,65 @@
 // #include "Arduino_LCD.h"
 #include "Servo.h"
 
+//---------------------
+//      Digits
+//---------------------
 #define digit_00          2
 #define digit_01          3
 #define digit_02          4
-#define servo_1           10 //#define digit_03          5
-#define servo_2           11 //#define digit_04          6
+#define digit_03          A2
+#define digit_04          A3
 #define digit_05          7
 #define digit_06          8
 #define digit_07          9
 #define digit_08          13
 #define digit_09          12
+
+//---------------------
+//      Drive pins
+//---------------------
 #define drive_pin_a       5
 #define drive_pin_b       6
-#define trigger_pin       A0
-#define release_arms_pin  A1 //
 #define drive_forward     165
-#define digit_03          A2
-#define digit_04          A3
+
+//---------------------
+//      Trigger pins
+//---------------------
+#define trigger_pin       A0
+#define release_arms_pin  A1 
+
+#define start_pin         A6
+
+//---------------------
+//      Servo pins
+//---------------------
+#define servo_1           10 //0123 arm
+#define servo_2           11 //789t arm
 
 #define hook_start_angle 90
 #define hook_down_angle 0
 
-//Defining servo objects?
+//Defining servo objects
 Servo hook_servo_1;
 Servo hook_servo_2;
+
+//---------------------
+//      Button push timing
+//---------------------
+const unsigned long SPACING = 250;  // ms between presses
+const unsigned long DURATION = 75; // duration of a press
+
+//---------------------
+//      
+//---------------------
+bool act = true; // if act is true some solenoid needs to toggle
+bool extended = false; // if extended is true one solenoid is extended
+int piIndex = 0; 
+unsigned long beginDelay;
+int pinNumber = 0;
+bool startPressed = false;
+bool atWall = false;
+int drivePins[2] = {drive_pin_a, drive_pin_b};
 
 void activateSolenoid(int Pin) {
   // send a HIGH Signal to Pin
@@ -52,21 +87,20 @@ void setup() {
   pinMode(digit_07, OUTPUT);
   pinMode(digit_08, OUTPUT);
   pinMode(digit_09, OUTPUT);
-  pinMode(trigger_pin, INPUT_PULLUP);
-  pinMode(release_arms_pin, OUTPUT);
   pinMode(drive_pin_a, OUTPUT);
   pinMode(drive_pin_b, OUTPUT);
-  
-  //pinMode(servo_1, OUTPUT);
-  //pinMode(servo_2, OUTPUT);
+  pinMode(trigger_pin, INPUT_PULLUP);
+  pinMode(release_arms_pin, OUTPUT);
+  pinMode(start_pin, INPUT_PULLUP);
 
+  //servo pin set up
   hook_servo_1.attach(servo_1);
   hook_servo_2.attach(servo_2);
-  
   // write hook servos to start position
   hook_servo_1.write(hook_start_angle);
   hook_servo_2.write(hook_start_angle);
 }
+
 // Figure out which pins could be used as pwm for arduino pro mini
 // Designate those as for the servos in #define.
 //**********************************************
@@ -78,30 +112,12 @@ void setup() {
 // Solenoids moved to A2 and A3
 //**********************************************
 
-// Write code so that as the robot drives forward, the servos will rotate 90 degrees.
-//**********************************************
-// pending...
-//**********************************************
-
-
-const unsigned long SPACING = 250;  // ms between presses
-const unsigned long DURATION = 75; // duration of a press
-
-bool act = true; // if act is true some solenoid needs to toggle
-bool extended = false; // if extended is true one solenoid is extended
-int piIndex = 0; 
-unsigned long beginDelay;
-int pinNumber = 0;
-bool startPressed = false;
-bool atWall = false;
-int drivePins[2] = {drive_pin_a, drive_pin_b};
-
 void loop() {
   //Serial.println("A");
   while (!startPressed) {
-    Serial.println(analogRead(trigger_pin));
-    if(analogRead(trigger_pin) < 100) {
-      Serial.println("C");
+    Serial.println(analogRead(start_pin));
+    if(analogRead(start_pin) < 100) {
+      //Serial.println("C");
       startPressed = true;
       delay(1000);
       //drop hook servos
@@ -113,10 +129,10 @@ void loop() {
   // drive forward until both switches hit.
   //Serial.println("D");
   while (!atWall) {
-    Serial.println("E");
+    //Serial.println("E");
     drive(drivePins, drive_forward);
     if (analogRead(trigger_pin) < 100) {
-      Serial.println("F");
+      //Serial.println("F");
       atWall = true;
       delay(200);
       activateSolenoid(release_arms_pin);
@@ -128,7 +144,7 @@ void loop() {
   }
   //Serial.println("G");
   if(act) {
-    Serial.println("H");
+    //Serial.println("H");
     pinNumber = pgm_read_byte_near(bigPI + piIndex);
     
 
