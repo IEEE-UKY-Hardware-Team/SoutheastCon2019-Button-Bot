@@ -49,7 +49,7 @@ Servo hook_servo_2;
 //---------------------
 //      Button push timing
 //---------------------
-const unsigned long SPACING = 250;  // ms between presses
+const unsigned long SPACING = 75;  // ms between presses
 const unsigned long DURATION = 75; // duration of a press
 
 //---------------------
@@ -93,6 +93,8 @@ void setup() {
   pinMode(release_arms_pin, OUTPUT);
   pinMode(start_pin, INPUT_PULLUP);
 
+  activateSolenoid(release_arms_pin);
+
   //servo pin set up
   hook_servo_1.attach(servo_1);
   hook_servo_2.attach(servo_2);
@@ -135,7 +137,7 @@ void loop() {
       //Serial.println("F");
       atWall = true;
       delay(200);
-      activateSolenoid(release_arms_pin);
+      deactivateSolenoid(release_arms_pin);
       delay(400);
       brake(drivePins[0], drivePins[1]);
       delay(2000);
