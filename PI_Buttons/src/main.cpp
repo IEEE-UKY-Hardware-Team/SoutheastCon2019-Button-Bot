@@ -49,8 +49,8 @@ Servo hook_servo_2;
 //---------------------
 //      Button push timing
 //---------------------
-const unsigned long SPACING = 75;  // ms between presses
-const unsigned long DURATION = 75; // duration of a press
+const unsigned long SPACING = 55;  // ms between presses
+const unsigned long DURATION = 55; // duration of a press
 
 //---------------------
 //      
@@ -101,6 +101,7 @@ void setup() {
   // write hook servos to start position
   hook_servo_1.write(hook_start_angle);
   hook_servo_2.write(hook_start_angle);
+  delay(3000);
 }
 
 // Figure out which pins could be used as pwm for arduino pro mini
@@ -118,7 +119,7 @@ void loop() {
   //Serial.println("A");
   while (!startPressed) {
     Serial.println(analogRead(start_pin));
-    if(analogRead(start_pin) < 100) {
+    if(analogRead(start_pin) > 100) {
       //Serial.println("C");
       startPressed = true;
       delay(1000);
