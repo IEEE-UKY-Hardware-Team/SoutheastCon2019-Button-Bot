@@ -32,6 +32,7 @@
 #define release_arms_pin  A1 
 
 #define start_pin         A6
+#define test_pin          A5
 
 //---------------------
 //      Servo pins
@@ -92,6 +93,7 @@ void setup() {
   pinMode(trigger_pin, INPUT_PULLUP);
   pinMode(release_arms_pin, OUTPUT);
   pinMode(start_pin, INPUT_PULLUP);
+  pinMode(test_pin, INPUT_PULLUP);
 
   activateSolenoid(release_arms_pin);
 
@@ -101,7 +103,7 @@ void setup() {
   // write hook servos to start position
   hook_servo_1.write(hook_start_angle);
   hook_servo_2.write(hook_start_angle);
-  delay(3000);
+  //delay(1000);
 }
 
 // Figure out which pins could be used as pwm for arduino pro mini
@@ -118,11 +120,58 @@ void setup() {
 void loop() {
   //Serial.println("A");
   while (!startPressed) {
-    Serial.println(analogRead(start_pin));
+    //Serial.println(analogRead(start_pin));
+    if(analogRead(test_pin) < 100 )
+    {
+      int pin_num;
+      for ( int i = 0; i < 10 ; i++)
+      {
+        switch(i)
+        {
+          case 0:
+          pin_num = digit_00;
+          break;
+          case 1:
+          pin_num = digit_01;
+          break;
+          case 2:
+          pin_num = digit_02;
+          break;
+          case 3:
+          pin_num = digit_03;
+          break;
+          case 4:
+          pin_num = digit_04;
+          break;
+          case 5:
+          pin_num = digit_05;
+          break;
+          case 6:
+          pin_num = digit_06;
+          break;
+          case 7:
+          pin_num = digit_07;
+          break;
+          case 8:
+          pin_num = digit_08;
+          break;
+          case 9:
+          pin_num = digit_09;
+          break;
+        }
+        for(int i = 0 ; i < 3; i++)
+        {
+          activateSolenoid(pin_num);
+          delay(250);
+          deactivateSolenoid(pin_num);
+          delay(250);
+        }
+      }
+    }
     if(analogRead(start_pin) > 100) {
       //Serial.println("C");
       startPressed = true;
-      delay(1000);
+      delay(500);
       //drop hook servos
       hook_servo_1.write(hook_down_angle);
       hook_servo_2.write(hook_down_angle);
@@ -138,7 +187,7 @@ void loop() {
       //Serial.println("F");
       atWall = true;
       delay(200);
-      deactivateSolenoid(release_arms_pin);
+      deactivateSolenoid(release_arms_pin);//this actually operators the electromeget
       delay(400);
       brake(drivePins[0], drivePins[1]);
       delay(2000);
